@@ -9,7 +9,6 @@ const material = new THREE.MeshNormalMaterial();
 
 const mesh = new THREE.Mesh( geometry, material );
 scene.add( mesh );
-
 const renderer = new THREE.WebGLRenderer( { antialias: true } );
 renderer.setSize( width, height );
 renderer.setAnimationLoop( animation );
