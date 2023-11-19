@@ -81,49 +81,75 @@
 		scene.add(house1);
 		scene.add(house2);
 
-		//camera.lookAt(mesh.position)
+		let spinstatus = false
 		document.addEventListener('keydown', function (event) {
-    switch (event.code) {
-        case 'ArrowUp':
-            camera.position.y += 0.1;
-            break;
-        case 'ArrowDown':
-            camera.position.y -= 0.1;
-            break;
-        case 'ArrowLeft':
-            camera.position.x -= 0.1;
-            break;
-        case 'ArrowRight':
-            camera.position.x += 0.1;
-            break;
-    }
-	switch (event.key.toLowerCase()) {
-        case 'w':
-            robot.position.y += 0.1;
-            break;
-        case 's':
-            robot.position.y -= 0.1;
-            break;
-    }
-});
-function animate() {
-    requestAnimationFrame(animate);
-    renderer.render(scene, camera);
-}
-animate();
-
-
-
-
+			switch (event.code) {
+				case 'ArrowUp':
+					camera.position.y += 0.1;
+					break;
+				case 'ArrowDown':
+					camera.position.y -= 0.1;
+					break;
+				case 'ArrowLeft':
+					camera.position.x -= 0.1;
+					break;
+				case 'ArrowRight':
+					camera.position.x += 0.1;
+					break;
+				case "Space":
+					if (spinstatus == false) {
+						spinstatus = true;
+						tickOverview();
+					}
+					else {
+						spinstatus = false;
+					}
+					break;
+			}
+			// robot moving
+			switch (event.key.toLowerCase()) {
+				case 'w':
+					robot.position.y += 0.05;
+					camera.lookAt(robot.position);
+					camera.position.set(house1.position.x, house1.position.y, house1.position.z + 0.03);
+					break;
+				case 's':
+					robot.position.y -= 0.05;
+					camera.lookAt(robot.position);
+					camera.position.set(house1.position.x, house1.position.y, house1.position.z + 0.03);
+					break;
+			}
+			//changing camera position
+			switch (event.key) {
+				case '1':
+					camera.position.set(0, 0, 2);
+					break;
+				case '2':
+					camera.position.set(house1.position.x, house1.position.y, house1.position.z + 0.03);
+					camera.lookAt(robot.position)
+					break;
+				case '3':
+					camera.position.set(house2.position.x, house2.position.y, house2.position.z + 0.03);
+					camera.lookAt(robot.position)
+					break;
+			}
+		});
+		function animate() {
+			requestAnimationFrame(animate);
+			renderer.render(scene, camera);
+		}
+		animate();
 		const clock = new THREE.Clock();
 		let time = Date.now();
 		const tickOverview = () => {
-			const elapsedTime = clock.getElapsedTime();
-			camera.position.x = Math.cos(elapsedTime)
-			camera.position.y = Math.sin(elapsedTime)
-			camera.lookAt(robot.position)
-			renderer.render(scene, camera);
-			window.requestAnimationFrame(tickOverview);
+			if (spinstatus == true) {
+				const elapsedTime = clock.getElapsedTime();
+				camera.position.x = Math.cos(elapsedTime)
+				camera.position.y = Math.sin(elapsedTime)
+				camera.lookAt(robot.position)
+				renderer.render(scene, camera);
+				window.requestAnimationFrame(tickOverview);
+			}
 		}
 	</script>
 </body>
