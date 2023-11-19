@@ -57,7 +57,7 @@
 		linesgroup.position.y = -1
 		scene.add(linesgroup)
 		linesgroup.rotation.z = Math.PI / 2;
-		linesgroup.position.z +=0.001;
+		linesgroup.position.z += 0.001;
 
 		const robotgeometry = new THREE.BoxGeometry(0.05, 0.05, 0.1);
 		const robotmaterial = new THREE.MeshBasicMaterial({ color: 0x940B92 });
@@ -65,7 +65,24 @@
 		robot.position.z += 0.1
 		scene.add(robot);
 
-//camera.lookAt(mesh.position)
+		const housegeometry = new THREE.BoxGeometry(0.25, 0.25, 0.15);
+		const housematerial = new THREE.MeshBasicMaterial({ color: 0x84714F });
+		const house1 = new THREE.Mesh(housegeometry, housematerial);
+		const house2 = new THREE.Mesh(housegeometry, housematerial);
+		house1.position.z += 0.1
+		house1.position.x += 0.25
+		house1.position.y -= 0.5
+		house2.position.z += 0.1
+		house2.position.x -= 0.25
+		house2.position.y += 0.5
+		scene.add(house1);
+		scene.add(house2);
+
+		//camera.lookAt(mesh.position)
+
+
+
+
 		const renderer = new THREE.WebGLRenderer();
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		document.body.appendChild(renderer.domElement);
@@ -74,8 +91,8 @@
 		let time = Date.now();
 		const tickOverview = () => {
 			const elapsedTime = clock.getElapsedTime();
-			camera.position.x=Math.cos(elapsedTime)
-			camera.position.y=Math.sin(elapsedTime)
+			camera.position.x = Math.cos(elapsedTime)
+			camera.position.y = Math.sin(elapsedTime)
 			camera.lookAt(robot.position)
 			renderer.render(scene, camera);
 			window.requestAnimationFrame(tickOverview);
