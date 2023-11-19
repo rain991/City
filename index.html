@@ -1,14 +1,181 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>My first three.js app</title>
-		<style>
-			body { margin: 0; }
-		</style>
-        <script src="three.js"></script>
-	</head>
-	<body>
-		<script src="main.js"></script>
-	</body>
+
+<head>
+	<meta charset="utf-8">
+	<title>City</title>
+	<style>
+		body {
+			margin: 0;
+		}
+	</style>
+	<script src="three.js"></script>
+</head>
+
+<body>
+	<script>
+		const scene = new THREE.Scene();
+		const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+		camera.position.z = 2
+		const renderer = new THREE.WebGLRenderer();
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		document.body.appendChild(renderer.domElement);
+
+		const grassgeometry = new THREE.PlaneGeometry(2, 2);
+		const grassmaterial = new THREE.MeshBasicMaterial({ color: 0x9ADE7B });
+		const area = new THREE.Mesh(grassgeometry, grassmaterial);
+		scene.add(area);
+
+		const axesHelper = new THREE.AxesHelper(5);
+		scene.add(axesHelper);
+
+		const roadgeometry = new THREE.PlaneGeometry(0.12, 1.99);
+		const roadmaterial = new THREE.MeshBasicMaterial({ color: 0x1F1717 });
+		const road = new THREE.Mesh(roadgeometry, roadmaterial);
+		road.position.z += 0.01
+		scene.add(road);
+
+		const walkwaygeometry = new THREE.PlaneGeometry(0.04, 1.99);
+		const walkwaymaterial = new THREE.MeshBasicMaterial({ color: 0xBFB29E });
+		const walkway1 = new THREE.Mesh(walkwaygeometry, walkwaymaterial);
+		const walkway2 = new THREE.Mesh(walkwaygeometry, walkwaymaterial);
+		walkway1.position.z += 0.01
+		walkway1.position.x -= 0.08
+		walkway2.position.x += 0.08
+		walkway2.position.z += 0.01
+		scene.add(walkway1);
+		scene.add(walkway2);
+
+		const lowThreeGeometry = new THREE.BoxGeometry(0.1, 0.1, 0.35);
+		const lowThreeMaterial = new THREE.MeshBasicMaterial({ color: 0x8B4513 });
+		const lowThree = new THREE.Mesh(lowThreeGeometry, lowThreeMaterial);
+		const crownGeometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
+		const crownMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+		const crown = new THREE.Mesh(crownGeometry, crownMaterial);
+		crown.position.z=lowThree.position.z+0.25
+		const threeGroup = new THREE.Group();
+		threeGroup.add(lowThree)
+		threeGroup.add(crown)
+		threeGroup.position.x+=0.3
+		threeGroup.position.y+=0.15
+		scene.add(threeGroup)
+
+
+
+		const linesgroup = new THREE.Group();
+		for (let spacebetween = 0.03; spacebetween < 2; spacebetween += 0.06) {
+			const linesgeometry = new THREE.PlaneGeometry(0.015, 0.03);
+			const linesmaterial = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
+			const lines = new THREE.Mesh(linesgeometry, linesmaterial);
+			lines.position.z += 0.01
+			lines.position.x = spacebetween
+			lines.rotation.z = Math.PI / 2
+			linesgroup.add(lines)
+		}
+		linesgroup.position.x = 0
+		linesgroup.position.y = -1
+		scene.add(linesgroup)
+		linesgroup.rotation.z = Math.PI / 2;
+		linesgroup.position.z += 0.001;
+
+		const robotgeometry = new THREE.BoxGeometry(0.05, 0.05, 0.1);
+		const robotmaterial = new THREE.MeshBasicMaterial({ color: 0x940B92 });
+		const robot = new THREE.Mesh(robotgeometry, robotmaterial);
+		robot.position.z += 0.1
+		scene.add(robot);
+
+		const housegeometry = new THREE.BoxGeometry(0.25, 0.25, 0.15);
+		const housematerial = new THREE.MeshBasicMaterial({ color: 0x84714F });
+		const house1 = new THREE.Mesh(housegeometry, housematerial);
+		const house2 = new THREE.Mesh(housegeometry, housematerial);
+		house1.position.z += 0.1
+		house1.position.x += 0.25
+		house1.position.y -= 0.5
+		house2.position.z += 0.1
+		house2.position.x -= 0.25
+		house2.position.y += 0.5
+		scene.add(house1);
+		scene.add(house2);
+
+		let spinstatus = false
+		document.addEventListener('keydown', function (event) {
+			switch (event.code) {
+				case 'ArrowUp':
+					camera.position.y += 0.1;
+					break;
+				case 'ArrowDown':
+					camera.position.y -= 0.1;
+					break;
+				case 'ArrowLeft':
+					camera.position.x -= 0.1;
+					break;
+				case 'ArrowRight':
+					camera.position.x += 0.1;
+					break;
+				case "Space":
+					if (spinstatus == false) {
+						spinstatus = true;
+						tickOverview();
+					}
+					else {
+						spinstatus = false;
+					}
+					break;
+			}
+			// robot moving
+			switch (event.key.toLowerCase()) {
+				case 'w':
+					if(robot.position.y<0.85){
+						robot.position.y += 0.05;
+					//camera.position.z += 0.3;
+					camera.lookAt(robot.position);
+					}
+					break;
+				case 's':
+				if(robot.position.y>-0.9){
+					robot.position.y -= 0.05;
+					//camera.position.z += 0.3;
+					camera.lookAt(robot.position);
+					}
+					break;
+			}
+
+			//changing camera position
+			switch (event.key) {
+				case '1':
+					camera.position.set(0, 0, 2);
+					camera.lookAt(0, 0, 0);
+					break;
+				case '2':
+					camera.position.copy(house1.position);
+					camera.position.z += 0.3;
+					camera.lookAt(robot.position);
+					break;
+				case '3':
+					camera.position.copy(house2.position);
+					camera.position.z += 0.3;
+					camera.lookAt(robot.position);
+					break;
+			}
+		});
+		function animate() {
+			requestAnimationFrame(animate);
+			renderer.render(scene, camera);
+		}
+		animate();
+		const clock = new THREE.Clock();
+		let time = Date.now();
+		const tickOverview = () => {
+			if (spinstatus == true) {
+				const elapsedTime = clock.getElapsedTime();
+				camera.position.x = Math.cos(elapsedTime)
+				camera.position.y = Math.sin(elapsedTime)
+				camera.lookAt(robot.position)
+				renderer.render(scene, camera);
+				window.requestAnimationFrame(tickOverview);
+			}
+		}
+	</script>
+</body>
+
 </html>
