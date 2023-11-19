@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>My first three.js app</title>
+	<title>City</title>
 	<style>
 		body {
 			margin: 0;
@@ -45,6 +45,22 @@
 		walkway2.position.z += 0.01
 		scene.add(walkway1);
 		scene.add(walkway2);
+
+		const lowThreeGeometry = new THREE.BoxGeometry(0.1, 0.1, 0.35);
+		const lowThreeMaterial = new THREE.MeshBasicMaterial({ color: 0x8B4513 });
+		const lowThree = new THREE.Mesh(lowThreeGeometry, lowThreeMaterial);
+		const crownGeometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
+		const crownMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+		const crown = new THREE.Mesh(crownGeometry, crownMaterial);
+		crown.position.z=lowThree.position.z+0.25
+		const threeGroup = new THREE.Group();
+		threeGroup.add(lowThree)
+		threeGroup.add(crown)
+		threeGroup.position.x+=0.3
+		threeGroup.position.y+=0.15
+		scene.add(threeGroup)
+
+
 
 		const linesgroup = new THREE.Group();
 		for (let spacebetween = 0.03; spacebetween < 2; spacebetween += 0.06) {
@@ -109,28 +125,36 @@
 			// robot moving
 			switch (event.key.toLowerCase()) {
 				case 'w':
-					robot.position.y += 0.05;
+					if(robot.position.y<0.85){
+						robot.position.y += 0.05;
+					//camera.position.z += 0.3;
 					camera.lookAt(robot.position);
-					camera.position.set(house1.position.x, house1.position.y, house1.position.z + 0.03);
+					}
 					break;
 				case 's':
+				if(robot.position.y>-0.9){
 					robot.position.y -= 0.05;
+					//camera.position.z += 0.3;
 					camera.lookAt(robot.position);
-					camera.position.set(house1.position.x, house1.position.y, house1.position.z + 0.03);
+					}
 					break;
 			}
+
 			//changing camera position
 			switch (event.key) {
 				case '1':
 					camera.position.set(0, 0, 2);
+					camera.lookAt(0, 0, 0);
 					break;
 				case '2':
-					camera.position.set(house1.position.x, house1.position.y, house1.position.z + 0.03);
-					camera.lookAt(robot.position)
+					camera.position.copy(house1.position);
+					camera.position.z += 0.3;
+					camera.lookAt(robot.position);
 					break;
 				case '3':
-					camera.position.set(house2.position.x, house2.position.y, house2.position.z + 0.03);
-					camera.lookAt(robot.position)
+					camera.position.copy(house2.position);
+					camera.position.z += 0.3;
+					camera.lookAt(robot.position);
 					break;
 			}
 		});
