@@ -17,6 +17,9 @@
 		const scene = new THREE.Scene();
 		const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 		camera.position.z = 2
+		const renderer = new THREE.WebGLRenderer();
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		document.body.appendChild(renderer.domElement);
 
 		const grassgeometry = new THREE.PlaneGeometry(2, 2);
 		const grassmaterial = new THREE.MeshBasicMaterial({ color: 0x9ADE7B });
@@ -79,13 +82,38 @@
 		scene.add(house2);
 
 		//camera.lookAt(mesh.position)
+		document.addEventListener('keydown', function (event) {
+    switch (event.code) {
+        case 'ArrowUp':
+            camera.position.y += 0.1;
+            break;
+        case 'ArrowDown':
+            camera.position.y -= 0.1;
+            break;
+        case 'ArrowLeft':
+            camera.position.x -= 0.1;
+            break;
+        case 'ArrowRight':
+            camera.position.x += 0.1;
+            break;
+    }
+	switch (event.key.toLowerCase()) {
+        case 'w':
+            robot.position.y += 0.1;
+            break;
+        case 's':
+            robot.position.y -= 0.1;
+            break;
+    }
+});
+function animate() {
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+}
+animate();
 
 
 
-
-		const renderer = new THREE.WebGLRenderer();
-		renderer.setSize(window.innerWidth, window.innerHeight);
-		document.body.appendChild(renderer.domElement);
 
 		const clock = new THREE.Clock();
 		let time = Date.now();
@@ -97,7 +125,6 @@
 			renderer.render(scene, camera);
 			window.requestAnimationFrame(tickOverview);
 		}
-		tickOverview()
 	</script>
 </body>
 
