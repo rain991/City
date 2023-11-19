@@ -23,6 +23,9 @@
 		const area = new THREE.Mesh(grassgeometry, grassmaterial);
 		scene.add(area);
 
+		const axesHelper = new THREE.AxesHelper(5);
+		scene.add(axesHelper);
+
 		const roadgeometry = new THREE.PlaneGeometry(0.12, 1.99);
 		const roadmaterial = new THREE.MeshBasicMaterial({ color: 0x1F1717 });
 		const road = new THREE.Mesh(roadgeometry, roadmaterial);
@@ -54,13 +57,30 @@
 		linesgroup.position.y = -1
 		scene.add(linesgroup)
 		linesgroup.rotation.z = Math.PI / 2;
+		linesgroup.position.z +=0.001;
 
+		const robotgeometry = new THREE.BoxGeometry(0.05, 0.05, 0.1);
+		const robotmaterial = new THREE.MeshBasicMaterial({ color: 0x940B92 });
+		const robot = new THREE.Mesh(robotgeometry, robotmaterial);
+		robot.position.z += 0.1
+		scene.add(robot);
 
+//camera.lookAt(mesh.position)
 		const renderer = new THREE.WebGLRenderer();
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		document.body.appendChild(renderer.domElement);
 
-		renderer.render(scene, camera);
+		const clock = new THREE.Clock();
+		let time = Date.now();
+		const tickOverview = () => {
+			const elapsedTime = clock.getElapsedTime();
+			camera.position.x=Math.cos(elapsedTime)
+			camera.position.y=Math.sin(elapsedTime)
+			camera.lookAt(robot.position)
+			renderer.render(scene, camera);
+			window.requestAnimationFrame(tickOverview);
+		}
+		tickOverview()
 	</script>
 </body>
 
